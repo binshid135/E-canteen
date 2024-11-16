@@ -1,39 +1,27 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { Stack } from "expo-router";
+import { View,Text } from "react-native";
+import { useFonts } from "expo-font";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+  const [fontsLoaded]=useFonts({    
+    "spacemono":require('./../assets/fonts/SpaceMono-Regular.ttf'),
+    "lobster":require('./../assets/fonts/Lobster-Regular.ttf'),
+    "edu-aus":require('./../assets/fonts/EduAUVICWANTHand-Bold.ttf'),
+    "amaranth":require('./../assets/fonts/Amaranth-Regular.ttf'),
+    "londrina":require('./../assets/fonts/LondrinaSolid-Black.ttf')
+  })
+  console.log("Fonts loaded:", fontsLoaded);
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
+  if (!fontsLoaded) {
+    return <View><Text>Loading...</Text></View>; // or a loading spinner
   }
-
+  
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+    <Stack screenOptions={{headerShown:false}}>
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="(auth)" />
+    </Stack>
+  )
 }
